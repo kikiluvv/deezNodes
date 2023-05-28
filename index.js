@@ -20,10 +20,10 @@ class DeezNodes {
                 type: 'line'
             },
             style: {
-                fg: 'white',
+                fg: 'cyan',
                 bg: 'black',
                 border: {
-                    fg: '#f0f0f0'
+                    fg: 'cyan'
                 }
             },
             label: chalk.cyan('-+-+-+-+-+- DeezNodes -+-+-+-+-+-'),
@@ -44,10 +44,11 @@ class DeezNodes {
             keys: true,
             mouse: true,
             border: {
-                type: 'line'
+                type: 'line',
+                fg: 'cyan'
             },
             style: {
-                fg: 'white',
+                fg: 'green',
                 bg: 'black'
             }
         });
@@ -95,6 +96,7 @@ class DeezNodes {
     listeningEvents = () => {
         this.log.log(chalk.green('Server Started! Watching Files :D'));
         this.log.log(chalk.green('Type help to list commands!'));
+        this.log.log('')
     }
 
     setupUI = () => {
@@ -130,6 +132,10 @@ class DeezNodes {
                 this.log.log(chalk.green('^C, ESC, Q: quit deezNodes'));
             }
 
+            else if (command.toLowerCase() === 'q') {
+                return process.exit(0);
+            }
+            
             this.inputBox.clearValue();
             this.inputBox.focus();
             this.screen.render();
