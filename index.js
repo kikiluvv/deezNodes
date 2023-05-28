@@ -14,15 +14,9 @@ class deezNodes {
         this.fileName = this.args[2];
         this.cwd = process.cwd();
         this.watchPaths = [
-            path.join(this.cwd, "/**/*.js"),
-            path.join(this.cwd, "/**/*.css"),
-            path.join(this.cwd, "/**/*.json"),
-            path.join(this.cwd, "/**/*.yaml"),
-            path.join(this.cwd, "/**/*.php"),
-            path.join(this.cwd, "/public/**/*.html")
+            path.join(this.cwd, "/**/*.js")
         ];
         this.ignoredPaths = "**/node_modules/*";
-        this.ignoredPaths = "**/.gitignore*"
 
         this.reload();
         this.startWatching();
@@ -32,33 +26,9 @@ class deezNodes {
     reload = () => {
         if (this.nodeServer) this.nodeServer.kill('SIGTERM');
         this.nodeServer = spawn('node', [this.fileName], { stdio: [process.stdin, process.stdout, process.stderr] });
-        // Inject a script tag into the HTML file to trigger a page refresh
-        const script = `
-            <script>
-                setTimeout(function() {
-                 location.reload();
-                 }, 1000);
-             </script>
-            `;
-
-        const fs = require('fs');
-        const htmlFilePath = path.join(this.cwd, 'public', 'index.html');
-        let html = fs.readFileSync(htmlFilePath, 'utf8');
-        html = html.replace('</body>', `${script}\n</body>`);
-        fs.writeFileSync(htmlFilePath, html);
     }
 
     startWatching = () => {
-        const io = require('socket.io')(8081);
-
-        io.on('connection', (socket) => {
-            console.log(chalk.yellow('=+=+=+=+=+= DeezNodes =+=+=+=+=+='));
-            console.log(chalk.green('Client connected'));
-        });
-        io.on('error', (err) => {
-            console.log(chalk.red('=+=+=+=+=+= DeezNodes =+=+=+=+=+='));
-            console.log(chalk.yellow(`Socket.io error: ${err}`));
-        });
         chokidar.watch(this.watchPaths, {
             ignored: this.ignoredPaths,
             ignoreInitial: true
@@ -85,30 +55,24 @@ class deezNodes {
             }
         });
         process.stdin.on("data", (chunk) => {
-            const cliInput = chunk.toString().trim();
-
+            let cliInput = chunk.toString();
             switch (cliInput) {
-                case 'rs\n':
-                case 'restart\n':
-                    console.log(chalk.yellow('=+=+=+=+=+= DeezNodes =+=+=+=+=+='));
-                    console.log(chalk.green('Restarted server! :D'));
-                    this.reload();
-                    break;
-
                 case 'ver\n':
-                case 'version\n':
                     console.log(chalk.yellow('=+=+=+=+=+= DeezNodes =+=+=+=+=+='));
                     console.log(chalk.green('Version: 1.0.0 :D'));
-                    break;
-
+                    break
+            }
+        });
+        process.stdin.on("data", (chunk) => {
+            let cliInput = chunk.toString();
+            switch (cliInput) {
                 case 'help\n':
                     console.log(chalk.yellow('=+=+=+=+=+= Help =+=+=+=+=+='));
-                    console.log(chalk.green('version (ver): log version'));
-                    console.log(chalk.green('restart (rs): restart server'));
-                    break;
+                    console.log(chalk.green('ver: log version'));
+                    console.log(chalk.green('rs: restart server'));
+                    break
             }
-        }); a
-
+        });
     }
 }
 
