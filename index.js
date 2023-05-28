@@ -119,7 +119,7 @@ class DeezNodes {
 
             // Version command
             else if (command === 'ver' || command === 'version') {
-                this.log.log(chalk.green('Version: 1.0.0 :D'));
+                this.log.log(chalk.green('Version: 1.0.5 :D'));
             }
 
             // Help command
